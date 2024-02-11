@@ -1,11 +1,12 @@
 // /expenses
-const ExpensesPage = () => {
-  return (
-    <div>
-      <h1>Expenses Page</h1>
-      {/* Add your content here */}
-    </div>
-  );
-};
 
-export default ExpensesPage;
+import { Outlet } from '@remix-run/react';
+
+export default function ExpensesLayout() {
+  return (
+    <main>
+      <p>Shared element!</p>
+      <Outlet />
+    </main>
+  );
+}
