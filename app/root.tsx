@@ -1,5 +1,5 @@
 import { cssBundleHref } from '@remix-run/css-bundle';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -9,12 +9,23 @@ import {
   ScrollRestoration,
 } from '@remix-run/react';
 
+import MainHeader from '~/components/navigation/MainHeader';
 import sharedStyles from '~/styles/shared.css';
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: sharedStyles },
 ];
+
+export const meta: MetaFunction = () => {
+  return [
+    { charset: 'utf-8' },
+    { title: 'Remix Starter' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'description', content: 'A simple app to demonstrate Remix features' },
+  ];
+}
+
 
 export default function App() {
   return (
@@ -36,6 +47,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <MainHeader />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
