@@ -1,5 +1,8 @@
-function AuthPage() {
-  return <div>AuthPage</div>;
+import AuthForm from '~/components/auth/AuthForm';
+import authStyles from '~/styles/auth.css';
+
+export default function AuthPage() {
+  return <AuthForm />;
 }
 
-export default AuthPage;
+export const links = () => [{ rel: 'stylesheet', href: authStyles }];
