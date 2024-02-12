@@ -2,6 +2,8 @@ import type { MetaFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FaArrowRight, FaDollarSign, FaChartBar } from 'react-icons/fa';
 
+import marketingStyles from '~/styles/marketing.css';
+
 export const meta: MetaFunction = () => {
   return [
     { title: 'New Remix App' },
@@ -9,6 +11,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const links = () => [{ rel: 'stylesheet', href: marketingStyles }];
 
 export default function Index() {
   return (
