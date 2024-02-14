@@ -1,7 +1,8 @@
 import ExpenseListItem from './ExpenseListItem';
 
-function ExpensesList({ expenses }) {
+import PropTypes from 'prop-types';
 
+function ExpensesList({ expenses }) {
   return (
     <ol id="expenses-list">
       {expenses.map((expense) => (
@@ -16,5 +17,9 @@ function ExpensesList({ expenses }) {
     </ol>
   );
 }
+
+ExpensesList.propTypes = {
+  expenses: PropTypes.array.isRequired,
+};
 
 export default ExpensesList;
