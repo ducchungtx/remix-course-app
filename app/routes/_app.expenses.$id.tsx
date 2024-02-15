@@ -44,6 +44,7 @@ export const action = async ({
     return redirect('/expenses');
   } else if (request.method === 'DELETE') {
     await deleteExpense(expenseId);
-    return redirect('/expenses');
+    // return redirect('/expenses');
+    return { deleteId: expenseId };
   }
 };
