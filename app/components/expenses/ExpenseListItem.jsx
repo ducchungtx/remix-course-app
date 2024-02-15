@@ -1,10 +1,11 @@
-import { Link } from "@remix-run/react";
+import { Link } from '@remix-run/react';
+
+import PropTypes from 'prop-types';
 
 function ExpenseListItem({ id, title, amount }) {
   function deleteExpenseItemHandler() {
     // tbd
   }
-
   return (
     <article className="expense-item">
       <div>
@@ -18,5 +19,11 @@ function ExpenseListItem({ id, title, amount }) {
     </article>
   );
 }
+
+ExpenseListItem.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
+};
 
 export default ExpenseListItem;
