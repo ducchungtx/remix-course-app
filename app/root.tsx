@@ -22,10 +22,12 @@ export const meta: MetaFunction = () => {
     { charset: 'utf-8' },
     { title: 'Remix Starter' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'description', content: 'A simple app to demonstrate Remix features' },
+    {
+      name: 'description',
+      content: 'A simple app to demonstrate Remix features',
+    },
   ];
-}
-
+};
 
 export default function App() {
   return (
@@ -56,3 +58,12 @@ export default function App() {
     </html>
   );
 }
+
+export const ErrorBoundary = (props: { error: Error }) => {
+  return (
+    <div>
+      <h1>Application Error</h1>
+      <pre>{props.error.message}</pre>
+    </div>
+  );
+};

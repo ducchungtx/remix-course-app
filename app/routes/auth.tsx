@@ -6,9 +6,20 @@ export default function AuthPage() {
 }
 
 export const action = async ({ request }: { request: Request }) => {
+  const searchParams = new URL(request.url).searchParams;
+  const authMode = searchParams.get('mode') || 'login';
+
   const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-  console.log(data);
+  const credentials = Object.fromEntries(formData);
+  console.log(credentials);
+
+  // validate user input
+
+  if (authMode === 'login') {
+    // login
+  } else {
+    // signup
+  }
 };
 
 export const links = () => [{ rel: 'stylesheet', href: authStyles }];
