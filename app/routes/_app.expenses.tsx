@@ -7,7 +7,7 @@ import ExpensesList from '~/components/expenses/ExpensesList';
 import { getExpenses } from '~/data/expenses.server';
 
 export default function ExpensesLayout() {
-  const { expenses } = useLoaderData<{ expenses: any[] }>();
+  const { expenses } = useLoaderData<{ expenses: [] }>();
 
   return (
     <>
@@ -31,5 +31,11 @@ export default function ExpensesLayout() {
 
 export const loader = async () => {
   const expenses = await getExpenses();
+  if (!expenses || expenses.length === 0) {
+    throw json(
+      { message: 'No expenses found' },
+      { status: 404, statusText: 'No expenses found' }
+    );
+  }
   return json({ expenses });
 };

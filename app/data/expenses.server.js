@@ -10,8 +10,7 @@ export const addExpense = async (expense) => {
       },
     });
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error('Could not add expense');
   }
 };
 
@@ -22,8 +21,7 @@ export const getExpenses = async () => {
     });
     return expenses;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error('Could not fetch expenses');
   }
 };
 
@@ -33,8 +31,7 @@ export const getExpense = async (id) => {
       where: { id },
     });
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error('Could not fetch expense');
   }
 };
 
@@ -49,8 +46,7 @@ export const updateExpense = async (id, expense) => {
       },
     });
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error('Could not update expense');
   }
 };
 
@@ -60,7 +56,6 @@ export const deleteExpense = async (id) => {
       where: { id },
     });
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error('Could not delete expense');
   }
 };

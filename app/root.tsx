@@ -1,15 +1,19 @@
 import { cssBundleHref } from '@remix-run/css-bundle';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
 } from '@remix-run/react';
 
 import MainHeader from '~/components/navigation/MainHeader';
+import Error from '~/components/util/Error';
 import sharedStyles from '~/styles/shared.css';
 
 export const links: LinksFunction = () => [
@@ -29,10 +33,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function App() {
+type DocumentProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+const Document = ({ title, children }: DocumentProps) => {
   return (
     <html lang="en">
       <head>
+        <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
@@ -49,21 +59,42 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <MainHeader />
-        <Outlet />
+        {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
   );
+};
+
+export default function App() {
+  return (
+    <Document title="Expense App">
+      <MainHeader />
+      <Outlet />
+    </Document>
+  );
 }
 
-export const ErrorBoundary = (props: { error: Error }) => {
-  return (
-    <div>
-      <h1>Application Error</h1>
-      <pre>{props.error.message}</pre>
-    </div>
-  );
-};
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Document title={error.statusText}>
+        <main>
+          <Error title={error.statusText}>
+            <p>
+              {error.data?.message ||
+                'Something went wrong, please try again later!'}
+            </p>
+            <p>
+              Back to <Link to="/">safety</Link>.
+            </p>
+          </Error>
+        </main>
+      </Document>
+    );
+  }
+}
