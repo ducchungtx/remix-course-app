@@ -7,6 +7,7 @@ import { validateExpenseInput } from '~/data/validation.server';
 
 export default function UpdateExpensesPage() {
   const navigate = useNavigate();
+
   function closeHandler() {
     navigate('..');
   }
