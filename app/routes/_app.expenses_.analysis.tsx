@@ -1,40 +1,55 @@
 // /expenses/analysis
-import ExpenseStatistics from "~/components/expenses/ExpenseStatistics";
-import Chart from "~/components/expenses/Chart";
-
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    title: "Toilet Paper",
-    amount: 94.12,
-    date: new Date(2020, 7, 14).toISOString(),
-  },
-  {
-    id: "e2",
-    title: "New TV",
-    amount: 799.49,
-    date: new Date(2021, 2, 12).toISOString(),
-  },
-  {
-    id: "e3",
-    title: "Car Insurance",
-    amount: 294.67,
-    date: new Date(2021, 2, 28).toISOString(),
-  },
-  {
-    id: "e4",
-    title: "New Desk (Wooden)",
-    amount: 450,
-    date: new Date(2021, 5, 12).toISOString(),
-  },
-];
+import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
+import Chart from '~/components/expenses/Chart';
+import { getExpenses } from '~/data/expenses.server';
+import { json } from '@remix-run/node';
+import {
+  Link,
+  isRouteErrorResponse,
+  useLoaderData,
+  useRouteError,
+} from '@remix-run/react';
+import Error from '~/components/util/Error';
 
 export default function ExpensesAnalysisPage() {
-
+  const expenses = useLoaderData();
   return (
     <main>
-      <ExpenseStatistics expenses={DUMMY_EXPENSES} />
-      <Chart expenses={DUMMY_EXPENSES} />
+      <ExpenseStatistics expenses={expenses} />
+      <Chart expenses={expenses} />
     </main>
   );
+}
+
+export const loader = async () => {
+  const expenses = await getExpenses();
+
+  if (!expenses || expenses.length === 0) {
+    throw json(
+      { message: 'No expenses found' },
+      { status: 404, statusText: 'No expenses found' }
+    );
+  }
+
+  return expenses;
+};
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <main>
+        <Error title={error.statusText}>
+          <p>
+            {error.data?.message ||
+              'Something went wrong - could not load expenses!'}
+          </p>
+          <p>
+            Back to <Link to="/">safety</Link>.
+          </p>
+        </Error>
+      </main>
+    );
+  }
 }

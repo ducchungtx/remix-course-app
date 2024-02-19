@@ -20,18 +20,24 @@ function ExpenseForm() {
     : [];
   const expenseData =
     expenses && expenses.find((expense) => expense.id === params.id);
+
   const navigation = useNavigation();
+
+  if (params.id && !expenseData) {
+    throw new Response();
+  }
+
   const defaultValue = expenseData
     ? {
-      title: expenseData.title,
-      amount: expenseData.amount,
-      date: expenseData.date,
-    }
+        title: expenseData.title,
+        amount: expenseData.amount,
+        date: expenseData.date,
+      }
     : {
-      title: '',
-      amount: '',
-      date: '',
-    };
+        title: '',
+        amount: '',
+        date: '',
+      };
 
   const isSubmitting = navigation.state !== 'idle';
 
@@ -51,7 +57,7 @@ function ExpenseForm() {
       method={expenseData ? 'put' : 'post'}
       className="form"
       id="expense-form"
-    // onSubmit={handleSubmit}
+      // onSubmit={handleSubmit}
     >
       <p>
         <label htmlFor="title">Expense Title</label>
