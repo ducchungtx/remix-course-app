@@ -1,7 +1,11 @@
-import { Link, NavLink } from '@remix-run/react';
+import { Link, NavLink, useLoaderData } from '@remix-run/react';
 import Logo from '../util/Logo';
 
 function MainHeader() {
+
+  const userId = useLoaderData();
+  console.log("userId: ", userId);
+
   return (
     <header id="main-header">
       <Logo />

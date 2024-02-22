@@ -1,7 +1,8 @@
 import { prisma } from './datatabse.server';
 import bcrypt from 'bcryptjs';
-import { createCookieSessionStorage } from '@remix-run/node';
+import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import process from 'node:process';
+import { create } from 'node:domain';
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
@@ -14,6 +15,16 @@ const sessionStorage = createCookieSessionStorage({
     httpOnly: true,
   },
 });
+
+const createUserSession = async (userId, redirectPath) => {
+  const session = await sessionStorage.getSession();
+  session.set('userId', userId);
+  return redirect(redirectPath, {
+    headers: {
+      'Set-Cookie': await sessionStorage.commitSession(session),
+    },
+  });
+}
 
 export async function signup({ email, password }) {
   const existingUser = await prisma.user.findFirst({ where: { email } });
@@ -28,6 +39,16 @@ export async function signup({ email, password }) {
   await prisma.user.create({
     data: { email, password: passwordHash },
   });
+  return createUserSession(existingUser.id, '/expenses');
+}
+
+export const getUserFromSession = async (request) => {
+  const session = await sessionStorage.getSession(request.headers.get('Cookie'));
+  const userId = session.get('userId');
+  if (!userId) {
+    return null;
+  }
+  return userId;
 }
 
 export async function login({ email, password }) {
@@ -51,5 +72,5 @@ export async function login({ email, password }) {
     throw error;
   }
 
-  return existingUser;
+  return createUserSession(existingUser.id, '/expenses');
 }
