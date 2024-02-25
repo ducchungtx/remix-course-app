@@ -3,7 +3,6 @@ import Logo from '../util/Logo';
 
 function MainHeader() {
   const userId = useLoaderData();
-  console.log('userId: ', userId);
 
   return (
     <header id="main-header">

@@ -73,8 +73,6 @@ export async function signup({ email, password }) {
 export async function login({ email, password }) {
   const existingUser = await prisma.user.findFirst({ where: { email } });
 
-  console.log('existingUser', existingUser);
-
   if (!existingUser) {
     const error = new Error(
       'Could not log you in, please check the provided credentials.'
@@ -87,8 +85,6 @@ export async function login({ email, password }) {
     password,
     existingUser.password
   );
-
-  console.log('passwordCorrect', passwordCorrect);
 
   if (!passwordCorrect) {
     const error = new Error(
