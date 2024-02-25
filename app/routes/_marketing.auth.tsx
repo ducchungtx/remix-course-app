@@ -1,4 +1,3 @@
-import { redirect } from '@remix-run/node';
 import AuthForm from '~/components/auth/AuthForm';
 import { login, signup } from '~/data/auth.server';
 import { validateCredentials } from '~/data/validation.server';
@@ -22,14 +21,23 @@ export const action = async ({ request }: { request: Request }) => {
   }
 
   try {
-    if (authMode === 'login') {
-      // login
-      return await login({ email: credentials.email, password: credentials.password });
-    } else {
-      return await signup({
-        email: credentials.email,
-        password: credentials.password,
-      });
+    try {
+      if (authMode === 'login') {
+        return await login({
+          email: credentials.email,
+          password: credentials.password,
+        });
+      } else {
+        return await signup({
+          email: credentials.email,
+          password: credentials.password,
+        });
+      }
+    } catch (error: any) {
+      if (/(422|401|403)/.test(error.status)) {
+        return { credentials: error.message };
+      }
+      return { credentials: 'Something went wrong!' };
     }
   } catch (error: any) {
     if (error.status === 422) {

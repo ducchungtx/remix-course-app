@@ -12,7 +12,6 @@ import {
   useRouteError,
 } from '@remix-run/react';
 
-import MainHeader from '~/components/navigation/MainHeader';
 import Error from '~/components/util/Error';
 import sharedStyles from '~/styles/shared.css';
 
@@ -71,7 +70,6 @@ const Document = ({ title, children }: DocumentProps) => {
 export default function App() {
   return (
     <Document title="Expense App">
-      <MainHeader />
       <Outlet />
     </Document>
   );

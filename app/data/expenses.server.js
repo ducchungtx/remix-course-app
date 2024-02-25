@@ -1,4 +1,4 @@
-import { prisma } from './datatabse.server';
+import { prisma } from './database.server';
 
 export const addExpense = async (expense) => {
   try {

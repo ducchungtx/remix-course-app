@@ -35,7 +35,7 @@ function AuthForm() {
       </p>
       {validationErrors && (
         <ul>
-          {Object.entries(validationErrors).map((error) => (
+          {Object.values(validationErrors).map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ul>

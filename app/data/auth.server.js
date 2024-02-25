@@ -1,8 +1,7 @@
-import { prisma } from './datatabse.server';
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
-import process from 'node:process';
-import { create } from 'node:domain';
+
+import { prisma } from './database.server';
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
@@ -16,7 +15,7 @@ const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const createUserSession = async (userId, redirectPath) => {
+async function createUserSession(userId, redirectPath) {
   const session = await sessionStorage.getSession();
   session.set('userId', userId);
   return redirect(redirectPath, {
@@ -26,47 +25,74 @@ const createUserSession = async (userId, redirectPath) => {
   });
 }
 
+export async function getUserFromSession(request) {
+  const session = await sessionStorage.getSession(
+    request.headers.get('Cookie')
+  );
+
+  const userId = session.get('userId');
+
+  if (!userId) {
+    return null;
+  }
+
+  return userId;
+}
+
+export async function destroyUserSession(request) {
+  const session = await sessionStorage.getSession(
+    request.headers.get('Cookie')
+  );
+
+  return redirect('/', {
+    headers: {
+      'Set-Cookie': await sessionStorage.destroySession(session),
+    },
+  });
+}
+
 export async function signup({ email, password }) {
   const existingUser = await prisma.user.findFirst({ where: { email } });
 
   if (existingUser) {
-    const error = new Error('User already exists');
+    const error = new Error(
+      'A user with the provided email address exists already.'
+    );
     error.status = 422;
     throw error;
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
-  await prisma.user.create({
-    data: { email, password: passwordHash },
-  });
-  return createUserSession(existingUser.id, '/expenses');
-}
+  const passwordHash = await bcryptjs.hash(password, 12);
 
-export const getUserFromSession = async (request) => {
-  const session = await sessionStorage.getSession(request.headers.get('Cookie'));
-  const userId = session.get('userId');
-  if (!userId) {
-    return null;
-  }
-  return userId;
+  const user = await prisma.user.create({
+    data: { email: email, password: passwordHash },
+  });
+  return createUserSession(user.id, '/expenses');
 }
 
 export async function login({ email, password }) {
   const existingUser = await prisma.user.findFirst({ where: { email } });
 
+  console.log('existingUser', existingUser);
+
   if (!existingUser) {
     const error = new Error(
-      'Could not log you in, please check your credentials and try again.'
+      'Could not log you in, please check the provided credentials.'
     );
     error.status = 401;
     throw error;
   }
 
-  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+  const passwordCorrect = await bcryptjs.compare(
+    password,
+    existingUser.password
+  );
 
-  if (!passwordMatch) {
+  console.log('passwordCorrect', passwordCorrect);
+
+  if (!passwordCorrect) {
     const error = new Error(
-      'Could not log you in, please check your credentials and try again.'
+      'Could not log you in, please check the provided credentials.'
     );
     error.status = 401;
     throw error;
