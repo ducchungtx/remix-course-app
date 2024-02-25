@@ -1,12 +1,13 @@
 import { prisma } from './database.server';
 
-export const addExpense = async (expense) => {
+export const addExpense = async (expense, userId) => {
   try {
     return await prisma.expense.create({
       data: {
         title: expense.title,
         amount: +expense.amount,
         date: new Date(expense.date),
+        User: { connect: { id: userId } },
       },
     });
   } catch (error) {
@@ -14,9 +15,11 @@ export const addExpense = async (expense) => {
   }
 };
 
-export const getExpenses = async () => {
+export const getExpenses = async (userId) => {
+  if (!userId) throw new Error('No user id provided');
   try {
     const expenses = await prisma.expense.findMany({
+      where: { userId },
       orderBy: { date: 'desc' },
     });
     return expenses;

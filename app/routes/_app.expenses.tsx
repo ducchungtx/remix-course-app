@@ -4,6 +4,7 @@ import { Link, Outlet, json, useLoaderData } from '@remix-run/react';
 import { FaDownload, FaPlus } from 'react-icons/fa';
 
 import ExpensesList from '~/components/expenses/ExpensesList';
+import { requireUserSession } from '~/data/auth.server';
 import { getExpenses } from '~/data/expenses.server';
 
 export default function ExpensesLayout() {
@@ -39,8 +40,9 @@ export default function ExpensesLayout() {
   );
 }
 
-export const loader = async () => {
-  const expenses = await getExpenses();
+export const loader = async ({ request }: { request: Request }) => {
+  const userId = await requireUserSession(request);
+  const expenses = await getExpenses(userId);
   // if (!expenses || expenses.length === 0) {
   //   throw json(
   //     { message: 'No expenses found' },

@@ -10,6 +10,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import Error from '~/components/util/Error';
+import { requireUserSession } from '~/data/auth.server';
 
 export default function ExpensesAnalysisPage() {
   const expenses = useLoaderData();
@@ -21,8 +22,10 @@ export default function ExpensesAnalysisPage() {
   );
 }
 
-export const loader = async () => {
-  const expenses = await getExpenses();
+export const loader = async ({ request }: { request: Request }) => {
+  const userId = await requireUserSession(request);
+
+  const expenses = await getExpenses(userId);
 
   if (!expenses || expenses.length === 0) {
     throw json(
