@@ -23,7 +23,7 @@ export const links: LinksFunction = () => [
 export const meta: MetaFunction = () => {
   return [
     { charset: 'utf-8' },
-    { title: 'Remix Starter' },
+    { title: 'RemixExpenses' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     {
       name: 'description',
@@ -41,7 +41,7 @@ const Document = ({ title, children }: DocumentProps) => {
   return (
     <html lang="en">
       <head>
-        <title>{title}</title>
+        {title && <title>{title}</title>}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />

@@ -34,6 +34,7 @@ export const action = async ({ request }: { request: Request }) => {
         });
       }
     } catch (error: any) {
+      debugger;
       if (/(422|401|403)/.test(error.status)) {
         return { credentials: error.message };
       }

@@ -1,3 +1,4 @@
+import { MetaFunction } from '@remix-run/node';
 import { FaTrophy, FaHandshake } from 'react-icons/fa';
 
 import PricingPlan from '~/components/marketing/PricingPlan';
@@ -39,4 +40,9 @@ export default function PricingPage() {
   );
 }
 
-export function meta() { }
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Pricing' },
+    { name: 'description', content: 'See our pricing plans.' },
+  ];
+}
