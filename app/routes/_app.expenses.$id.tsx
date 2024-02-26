@@ -1,4 +1,5 @@
 // /expenses/:id
+import { MetaFunction } from '@remix-run/node';
 import { redirect, useNavigate } from '@remix-run/react';
 import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
@@ -49,3 +50,11 @@ export const action = async ({
     return { deleteId: expenseId };
   }
 };
+
+export const meta: MetaFunction = ({ params, location, data, parentsData }) => {
+  console.log("parentsData", parentsData);
+  return [
+    { title: '' },
+    { name: 'description', content: 'Update expense.' },
+  ];
+}
